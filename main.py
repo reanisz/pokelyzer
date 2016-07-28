@@ -28,31 +28,23 @@ class Pokemon:
         self.base_stamina = self.data["BaseStamina"]
         self.base_attack = self.data["BaseAttack"]
         self.base_defense = self.data["BaseDefense"]
-        self.iv = IV(0,0,0)
+        self.iv = []
 
     def calc_iv(self):
         for s in range(0,16):
             estimated_hp = math.floor((self.base_stamina + s) * arc_table[self.level])
             if(estimated_hp != self.hp):
                 continue
+            #print("hp: {0} - {1}".format(estimated_hp, self.hp))
             for a in range(0,16):
                for d in range(0,16):
                    estimated_cp = math.floor((self.base_attack + a) * math.sqrt(self.base_defense + d) * math.sqrt(self.base_stamina + s) * math.pow(arc_table[self.level], 2) / 10)
+                   # print("  | cp: {0} - {1}".format(estimated_cp, self.cp))
                    if(self.cp == estimated_cp):
-                       self.iv = IV(s,a,d)
-                       print("{0}, {1}, {2}".format(s,a,d))
+                       self.iv.append(IV(s,a,d))
+                       #print("{0}, {1}, {2}".format(s,a,d))
 
 
-        
-
-
-player_level = 15;
-pokemon_level_max = 1 + player_level * 2
-
-arc_max = arc_table[pokemon_level_max + 1]
-arc_max = arc_table[player_level * 2 - 2]
-
-print("pokemon_level_max=" + str(pokemon_level_max))
 
 def extract_digits(str):
     pattern = r"\d+"
@@ -72,7 +64,11 @@ def extarct_hp(str):
     else:
         return "null"
 
-def analyze_image(pokemon, path):
+def analyze_image(player_level, pokemon, path):
+    pokemon_level_max = 1 + player_level * 2
+    arc_max = arc_table[pokemon_level_max + 1]
+    arc_max = arc_table[player_level * 2 - 2]
+
     tools = pyocr.get_available_tools()
 
     if len(tools) == 0:
@@ -97,8 +93,7 @@ def analyze_image(pokemon, path):
 
     draw = ImageDraw.Draw(img_source)
     for i in range(0, pokemon_level_max + 1):
-        theta = (arc_table[i] - 0.094) / arc_max * math.pi# + 0.02
-        theta = ((arc_table[i]-0.094) * 202.037116 / arc_max) * math.pi / 180# + 0.02
+        theta = ((arc_table[i]-0.094) * 202.037116 / arc_max) * math.pi / 180 + 0.00
         p = (-math.cos(theta) * radius, -math.sin(theta) * radius)
         pos = tuple([a + b for (a,b) in zip(p, center)])
         pix = img_source.getpixel( pos )
@@ -113,17 +108,19 @@ def analyze_image(pokemon, path):
     pokemon.nickname = res_name.replace(" ", "").replace("　", "")
     pokemon.level = pokemon_level
 
-pokemon = Pokemon(134)
-analyze_image(pokemon, "image/piyo.png")
-pokemon.cp = 1236
-pokemon.hp = 146
 
-print("pokemon_level = " + str(pokemon.level / 2 + 1))
-print("CP => " + str(pokemon.cp))
-print("NAME => " + pokemon.name)
-print("NICKNAME => " + pokemon.nickname)
-print("HP => " + str(pokemon.hp))
+def test():
+    pokemon = Pokemon(134)
+    analyze_image(15, pokemon, "image/piyo.png")
 
-pokemon.calc_iv()
+    print("pokemon_level = " + str(pokemon.level / 2 + 1))
+    print("CP => " + str(pokemon.cp))
+    print("NAME => " + pokemon.name)
+    print("NICKNAME => " + pokemon.nickname)
+    print("HP => " + str(pokemon.hp))
 
-print("IV: hp=" + str(pokemon.iv.stamina) + " attack=" + str(pokemon.iv.attack) + " defense=" + str(pokemon.iv.defense))
+    pokemon.calc_iv()
+
+    print("( a,  d,  s)")
+    for iv in pokemon.iv:
+        print("({0:>2}, {1:>2}, {2:>2})".format(iv.attack, iv.defense, iv.stamina))
