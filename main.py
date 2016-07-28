@@ -64,7 +64,7 @@ def extarct_hp(str):
     else:
         return "null"
 
-def analyze_image(player_level, pokemon, path):
+def analyze_image(player_level, pokemon, image):
     pokemon_level_max = 1 + player_level * 2
     arc_max = arc_table[pokemon_level_max + 1]
     arc_max = arc_table[player_level * 2 - 2]
@@ -76,7 +76,7 @@ def analyze_image(player_level, pokemon, path):
         sys.exit(1)
 
     tool = tools[0]
-    img_source = Image.open(path)
+    img_source = Image.open(image)
     img_cp = img_source.crop((218,59,218+201,59+79))
     img_name = img_source.crop((34,507,34+585,507+66))
     img_hp = img_source.crop((198,600,198+267,600+29))
@@ -97,11 +97,13 @@ def analyze_image(player_level, pokemon, path):
         p = (-math.cos(theta) * radius, -math.sin(theta) * radius)
         pos = tuple([a + b for (a,b) in zip(p, center)])
         pix = img_source.getpixel( pos )
+        col = (0x00,0x00,0x00)
         if max(pix) >= 245:
             pokemon_level = i
-        draw.point(pos, (0x00, 0x00, 0x00))
-        draw.line((pos, center), (0x33,0x33,0x33))
-    img_source.save("image/out.png")
+            col = (0xff,0x00,0x00)
+        draw.point(pos, col)
+        draw.line((pos, center), col)
+    img_source.save(image + ".out.png")
 
     pokemon.cp = extract_digits(res_cp)
     pokemon.hp = extarct_hp(res_hp)
@@ -111,7 +113,7 @@ def analyze_image(player_level, pokemon, path):
 
 def test():
     pokemon = Pokemon(134)
-    analyze_image(15, pokemon, "image/piyo.png")
+    analyze_image(15, pokemon, open("image/piyo.png"))
 
     print("pokemon_level = " + str(pokemon.level / 2 + 1))
     print("CP => " + str(pokemon.cp))
@@ -124,3 +126,4 @@ def test():
     print("( a,  d,  s)")
     for iv in pokemon.iv:
         print("({0:>2}, {1:>2}, {2:>2})".format(iv.attack, iv.defense, iv.stamina))
+
