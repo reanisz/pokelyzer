@@ -27,9 +27,10 @@
             <img src="{{pokemon.img_path}}" />
         </div>
         <div classs="column column-right">
-            <p>{{pokemon.nickname}} lv-{{pokemon.level / 2 + 1}}</p>
-            <p>hp: {{pokemon.hp}}</p>
-            <p>cp: {{pokemon.cp}}</p>
+            <h2>{{pokemon.nickname}} Lv:{{pokemon.level / 2 + 1}}</h2>
+            <p>HP: {{pokemon.hp}} CP: {{pokemon.cp}}</p>
+            
+            <h3> RANK: {{pokemon.rank}} / 100 </h3>
 
             <h3>可能性のある個体値</h3>
             <table class="type01">

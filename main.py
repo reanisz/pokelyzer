@@ -32,10 +32,12 @@ class Pokemon:
         self.min_cp = -1
         self.max_cp = 1
         self.iv = []
+        self.rank = 0
 
     def calc_iv(self):
         self.min_cp = math.floor((self.base_attack + 0) * math.sqrt(self.base_defense + 0) * math.sqrt(self.base_stamina + 0) * math.pow(arc_table[self.level], 2) / 10)
         self.max_cp = math.floor((self.base_attack + 15) * math.sqrt(self.base_defense + 15) * math.sqrt(self.base_stamina + 15) * math.pow(arc_table[self.level], 2) / 10)
+        self.rank = int((self.cp - self.min_cp) / (self.max_cp - self.min_cp) * 100)
 
         for s in range(0,16):
             estimated_hp = math.floor((self.base_stamina + s) * arc_table[self.level])
@@ -60,7 +62,7 @@ def extract_digits(str):
     if result:
         return int(result.group())
     else:
-        return "null"
+        return -1
 
 def extarct_hp(str):
     pattern = r"(?:HP)?(?:\d+/)?(\d+)"
@@ -69,7 +71,14 @@ def extarct_hp(str):
     if result:
         return int(result.group(1))
     else:
-        return "null"
+        return -1
+
+def fitting(t, f, to):
+    res = tuple([v * to / f for (v) in t])
+    print(str(t))
+    print(str(res))
+    return res
+
 
 def analyze_image(player_level, pokemon, image):
     pokemon_level_max = 1 + player_level * 2
@@ -84,16 +93,18 @@ def analyze_image(player_level, pokemon, image):
 
     tool = tools[0]
     img_source = Image.open(image)
-    img_cp = img_source.crop((218,59,218+201,59+79))
-    img_name = img_source.crop((34,507,34+585,507+66))
-    img_hp = img_source.crop((198,600,198+267,600+29))
+    img_width = img_source.width
+    img_mul = img_source.width / 640
+    img_cp   = img_source.crop(fitting((218,59,218+201,59+79), 640, img_width))
+    img_name = img_source.crop(fitting((34,507,34+585,507+66), 640, img_width))
+    img_hp   = img_source.crop(fitting((198,600,198+267,600+29), 640, img_width))
 
     res_cp = tool.image_to_string(img_cp, lang="eng", builder=pyocr.builders.TextBuilder())
     res_name = tool.image_to_string(img_name, lang="jpn", builder=pyocr.builders.TextBuilder())
     res_hp = tool.image_to_string(img_hp, lang="eng", builder=pyocr.builders.TextBuilder())
 
-    radius = (640 - 62*2) / 2
-    center = ((640 - 62*2)/2 + 62, 403)
+    radius = (640 - 62*2) / 2 * img_mul
+    center = fitting(((640 - 62*2)/2 + 62, 403), 640, img_width)
 
     pokemon_level = 1
 
@@ -112,8 +123,8 @@ def analyze_image(player_level, pokemon, image):
         draw.line((pos, center), col)
     img_source.save(image + ".out.png")
 
-    pokemon.cp = extract_digits(res_cp)
-    pokemon.hp = extarct_hp(res_hp)
+    pokemon.cp = int(extract_digits(res_cp))
+    pokemon.hp = int(extarct_hp(res_hp))
     pokemon.nickname = res_name.replace(" ", "").replace("　", "")
     pokemon.level = pokemon_level
 
