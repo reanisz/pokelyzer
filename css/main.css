@@ -1,0 +1,42 @@
+div.pokemon{
+  border-style: solid;
+  border-color: #444444;
+  float: left;
+  width: 400px;
+  max-width: 100%;
+  margin: 5px;
+  padding: 4px;
+}
+
+div.column{
+}
+
+div.column-left{
+}
+
+div.column-right{
+  width: 80%;
+}
+
+img {
+  width: 100%;
+}
+
+table.type01 {
+  border-collapse: collapse;
+  text-align: left;
+  line-height: 1.5;
+}
+table.type01 th {
+  width: 150px;
+  padding: 10px;
+  font-weight: bold;
+  vertical-align: top;
+  border: 1px solid #ccc;
+}
+table.type01 td {
+  width: 350px;
+  padding: 10px;
+  vertical-align: top;
+  border: 1px solid #ccc;
+}
