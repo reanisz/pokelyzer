@@ -98,7 +98,8 @@ def analyze_image(player_level, pokemon, image):
 
     tool = tools[0]
     img_source = Image.open(image)
-    draw = ImageDraw.Draw(img_source)
+    img_blacked = Image.open(image)
+    draw = ImageDraw.Draw(img_blacked)
 
     for x,y in product(*map(range, img_source.size)):
         if(not is_white(img_source.getpixel((x,y)))):
@@ -106,7 +107,7 @@ def analyze_image(player_level, pokemon, image):
 
     img_width = img_source.width
     img_mul = img_source.width / 640
-    img_cp   = img_source.crop(fitting((218,59,218+201,59+79), 640, img_width))
+    img_cp   = img_blacked.crop(fitting((218,59,218+201,59+79), 640, img_width))
     img_name = img_source.crop(fitting((34,507,34+585,507+66), 640, img_width))
     img_hp   = img_source.crop(fitting((198,600,198+267,600+29), 640, img_width))
 
@@ -131,7 +132,7 @@ def analyze_image(player_level, pokemon, image):
             col = (0xff,0xff,0x00)
         draw.point(pos, col)
         draw.line((pos, center), col)
-    img_source.save(image + ".out.png")
+    img_blacked.save(image + ".out.png")
 
     pokemon.cp = int(extract_digits(res_cp))
     pokemon.hp = int(extarct_hp(res_hp))
