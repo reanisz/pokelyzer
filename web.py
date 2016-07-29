@@ -33,7 +33,7 @@ def upload():
     plv = int(request.forms.get("plv"))
     def co_analyze(file):
         return analyze(file, pno, plv)
-    poke = list(pool.map(co_analyze, files))
+    poke = sorted(list(pool.map(co_analyze, files)), key=lambda p: -p.rank)
     #poke = [analyze(f) for f in files]
     return template('index', pokemons=poke)
 
@@ -44,6 +44,9 @@ def static_img(filepath):
 @route('/css/<filepath:path>')
 def static_css(filepath):
     return static_file(filepath, root="./css")
+@route('/js/<filepath:path>')
+def static_js(filepath):
+    return static_file(filepath, root="./js")
 
 #run(host='192.168.33.10', port=3000)
 run(host='10.0.2.15', port=3000)

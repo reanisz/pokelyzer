@@ -76,8 +76,8 @@ def extarct_hp(str):
 
 def fitting(t, f, to):
     res = tuple([v * to / f for (v) in t])
-    print(str(t))
-    print(str(res))
+    #print(str(t))
+    #print(str(res))
     return res
 
 def is_white(pixel):
@@ -123,6 +123,7 @@ def analyze_image(player_level, pokemon, image):
 
     for i in range(0, pokemon_level_max + 1):
         theta = ((arc_table[i]-0.094) * 202.037116 / arc_max) * math.pi / 180 + 0.00
+        #theta = ((arc_table[i]-0.094) * 203.037116 / arc_max) * math.pi / 180 + 0.00
         p = (-math.cos(theta) * radius, -math.sin(theta) * radius)
         pos = tuple([a + b for (a,b) in zip(p, center)])
         pix = img_source.getpixel( pos )
