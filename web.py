@@ -4,6 +4,9 @@ import pdb
 from main import analyze_image, Pokemon
 import uuid
 import concurrent.futures
+import json
+
+pokemon_name = json.load(open("pokename.json"))
 
 def analyze(file, pno, plv):
     print("Analyze Start")
@@ -23,7 +26,7 @@ def analyze(file, pno, plv):
 
 @route('/')
 def index():
-    return template('index', pokemons=None)
+    return template('index', pokemons=None, pokename=pokemon_name)
 
 @route('/upload', method='POST')
 def upload():
@@ -35,7 +38,7 @@ def upload():
         return analyze(file, pno, plv)
     poke = sorted(list(pool.map(co_analyze, files)), key=lambda p: -p.rank)
     #poke = [analyze(f) for f in files]
-    return template('index', pokemons=poke)
+    return template('index', pokemons=poke, pokename=pokemon_name)
 
 @route('/tmp/<filepath:path>')
 def static_img(filepath):
