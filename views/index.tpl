@@ -19,6 +19,9 @@
     <li class="nav-item active">
     <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
     </li>
+    <li class="nav-item">
+    <a class="nav-link" href="http://kampa.me/t/jen">Donate</a>
+    </li>
     </ul>
     </nav>
 
