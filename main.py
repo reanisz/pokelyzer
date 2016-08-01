@@ -34,6 +34,8 @@ class Pokemon:
         self.max_cp = 1
         self.iv = []
         self.rank = 0
+        self.is_error = 0
+        self.is_warning = 0
 
     def calc_iv(self):
         self.min_cp = math.floor((self.base_attack + 0) * math.sqrt(self.base_defense + 0) * math.sqrt(self.base_stamina + 0) * math.pow(arc_table[self.level], 2) / 10)
@@ -52,6 +54,9 @@ class Pokemon:
                    if(self.cp == estimated_cp):
                        self.iv.append(IV(s,a,d,estimated_cp))
                        #print("{0}, {1}, {2}".format(s,a,d))
+        self.iv.sort(key=lambda v: -(v.stamina * 1000 + (v.attack + v.defense)))
+        if len(self.iv) == 0:
+            self.is_warning = 1
     
 
 
@@ -139,6 +144,9 @@ def analyze_image(player_level, pokemon, image):
     pokemon.hp = int(extarct_hp(res_hp))
     pokemon.nickname = res_name.replace(" ", "").replace("　", "")
     pokemon.level = pokemon_level
+
+    if pokemon.cp == -1 or pokemon.hp == -1:
+        pokemon.is_error = 1
 
 
 def test():

@@ -61,38 +61,47 @@
     </div>
 
 % if not pokemons is None:
-% i = 0
-%   for pokemon in pokemons:
+    % i = 0
+    % for pokemon in pokemons:
+        % card_class = ""
+        % if pokemon.rank >= 95:
+            % card_class = "card-info"
+        % end
+        % if pokemon.is_warning:
+            % card_class = "card-warning"
+        % end
+        % if pokemon.is_error:
+            % card_class = "card-danger"
+        % end
+        <div class="col-xs-12 col-sm-6 col-md-4 col-xl-3">
+            <div class="card">
+                <h4 class="card-header {{card_class}}"> Rank {{pokemon.rank}} / 100 </h4>
+                <div class="card-block">
+                    <img src="{{pokemon.img_path}}" class="" style="width:98%; height:auto"/>
+                    <h4 class="card-title">{{pokemon.nickname}} Lv:{{pokemon.level / 2 + 1}}</h4>
+                    <p class="card-text">
+                        HP: {{pokemon.hp}} CP: {{pokemon.cp}}
+                    </p>
+                        
 
-    <div class="col-sm-12 col-md-4 col-xl-3">
-    <div class="card">
-        <img src="{{pokemon.img_path}}" class="card-img-top" style="width:100%; height:auto"/>
-        <div class="card-block">
-            <h4 class="card-title">{{pokemon.nickname}} Lv:{{pokemon.level / 2 + 1}}</h4>
-            <h4 class="card-title"> RANK: {{pokemon.rank}} / 100 </h3>
-            <p class="card-text">
-                HP: {{pokemon.hp}} CP: {{pokemon.cp}}
-            </p>
-                
-
-            <a class="btn btn-primary" data-toggle="collapse" href="#pokemon-iv-{{i}}" aria-expanded="false" aria-controls="pokemon-iv-{{i}}">個体値を見る</a>
-            <div class="collapse" id="pokemon-iv-{{i}}">
-            <table class="table">
-                <thead class="thead-inverse">
-                <tr><th>atk</th><th>def</th><th>sta</th><th>ad/s</th></tr>
-                </thead>
-                <tbody>
-%     for iv in pokemon.iv:
-                <tr><td>{{iv.attack}}</td><td>{{iv.defense}}</td><td>{{iv.stamina}}</td><td>{{iv.attack + iv.defense}}/{{iv.stamina}}</td></tr>
-%     end
-                </tbody>
-            </table>
+                    <a class="btn btn-primary" data-toggle="collapse" href="#pokemon-iv-{{i}}" aria-expanded="false" aria-controls="pokemon-iv-{{i}}">個体値を見る</a>
+                    <div class="collapse" id="pokemon-iv-{{i}}">
+                        <table class="table">
+                            <thead class="thead-inverse">
+                                <tr><th>atk</th><th>def</th><th>sta</th><th>ad/s</th></tr>
+                            </thead>
+                            <tbody>
+                            % for iv in pokemon.iv:
+                                <tr><td>{{iv.attack}}</td><td>{{iv.defense}}</td><td>{{iv.stamina}}</td><td>{{iv.attack + iv.defense}}/{{iv.stamina}}</td></tr>
+                            % end
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-    </div>
-% i = i + 1
-%   end
+        % i = i + 1
+    % end
 % end
     </div>
 
